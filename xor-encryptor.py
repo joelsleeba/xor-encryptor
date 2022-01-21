@@ -27,7 +27,7 @@ def file_ops(enc=True, inp='input', outp='output-'+str(date.today())):
 		out = xor_encrypt(text, key) if enc else xor_decrypt(text, key)
 		with open(outp, 'w') as fout:
 			fout.write(out)
-		print(out)
+		#print(out)
 
 def cli():
 	enc = True if input('Encrypt? (y/n):') == 'y' else False
