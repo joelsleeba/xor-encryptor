@@ -1,79 +1,123 @@
 import sys
 import getpass
-from datetime import date
 
 doc = """
 
 """
 
+def xor_core_txt(txtnums, key):
+    xor = lambda x, y: x^y
+    keynums = [ord(j) for i in range(0, len(txtnums)//len(key)+1) for j in key]
+    return list(map(xor, txtnums, keynums))
+
+def xor_txt_encrypt(txt, key):
+    txtnums = list(map(ord, txt))
+    return ','.join(map(str, xor_core_txt(txtnums, key)))
+
+def xor_txt_decrypt(txt, key):
+    txtnums = list(map(int, txt.split(',')))
+    return ''.join(map(chr, xor_core_txt(txtnums, key)))
 
 def xor_core(data, key):
     xor = lambda x, y: x^y
     longkey = key*(len(data)//len(key)+1)
-    datarray = bytearray(data)
-    return bytes(map(xor, datarray, longkey))
+    return bytes(map(xor, data, longkey))
  
-def file_ops(keyfile='key', inp=None, outp=None):
-	with open(inp, 'rb') as fin, open(keyfile, 'rb') as keyin:
+def bin_ops(keyin, inp, outp, clikey=False):
+	if not clikey:
+		keyfile = open(keyin, 'rb')
+		key = keyfile.read()
+		keyfile.close()
+	else:
+		key = keyin
+
+	with open(inp, 'rb') as fin:
 		data = fin.read()
-		key = keyin.read()
 		out = xor_core(data, key)
 		with open(outp, 'wb') as fout:
 			fout.write(out)
-		#print(out)
 
-def cli():
-	enc = True if input('Encrypt? (y/n):') == 'y' else False
-	if enc:
-		text = input("Enter text to encrypt:")
-		key = getpass.getpass("Enter key:")
-		print(xor_encrypt(text, key))
-	else:
-		text = input("Enter text to decrypt:")
-		key = getpass.getpass("Enter key:")
-		print(xor_decrypt(text, key))
+def txt_ops(enc=False, key=None, txt=None):
+	return xor_txt_encrypt(txt, key) if enc else xor_txt_decrypt(txt, key)
 		
 if __name__ == "__main__":
-	if sys.argv[1] == '-k' and sys.argv[3] == '-i' and sys.argv[5] == '-o':
-		file_ops(keyfile = sys.argv[2], inp = sys.argv[4], outp = sys.argv[6])
+	if '-b' in sys.argv:
+		clikey = False
+		if '-k' in sys.argv:
+			try:
+				keyin = sys.argv[sys.argv.index('-k')+1]
+			except:
+				print('Specify path to key file after -k')
+				quit()
+		else:
+			keyin = getpass.getpass("Enter key:").encode('utf-8')
+			clikey = True
+		
+		if '-i' in sys.argv:
+			try:
+				inpf = sys.argv[sys.argv.index('-i')+1]
+			except:
+				print('Specify path to input file after -i')
+				quit()
+		else:
+			print('Specify path to input file after -i')
+			quit()
 
-	"""
-	if len(sys.argv) < 3:
-		file_ops()
-	elif len(sys.argv) == 4:
-		if sys.argv[1] == '-e':
-			if sys.argv[2] == '-i':
-				file_ops(enc=True, inp = sys.argv[3])
-			elif sys.argv[2] == '-o':
-				file_ops(enc=True, outp = sys.argv[3])
-			else:
-				raise AttributeError(doc)
-		elif sys.argv[1] == '-d':
-			if sys.argv[2] == '-i':
-				file_ops(enc=False, inp = sys.argv[3])
-			elif sys.argv[2] == '-o':
-				file_ops(enc=False, outp = sys.argv[3])
-			else:
-				raise AttributeError(doc)
+		if '-o' in sys.argv:
+			try:
+				outf = sys.argv[sys.argv.index('-i')+1]
+			except:
+				print('Specify path to output file after -o')
+				quit()
 		else:
-			raise AttributeError(doc)
-	elif len(sys.argv) == 6:
-		if sys.argv[1] == '-e':
-			if sys.argv[2] == '-i' and sys.argv[4] == '-o':
-				file_ops(enc=True, inp = sys.argv[3], outp = sys.argv[5])
-			elif sys.argv[2] == '-o' and sys.argv[4] == '-i':
-				file_ops(enc=True, inp = sys.argv[5], outp = sys.argv[3])
-			else:
-				raise AttributeError(doc)
-		elif sys.argv[1] == '-d':
-			if sys.argv[2] == '-i' and sys.argv[4] == '-o':
-				file_ops(enc=False, inp = sys.argv[3], outp = sys.argv[5])
-			elif sys.argv[2] == '-o' and sys.argv[4] == '-i':
-				file_ops(enc=False, inp = sys.argv[5], outp = sys.argv[3])
-			else:
-				raise AttributeError(doc)
-		else:
-			raise AttributeError(doc)
+			print('Specify path to output file after -o')
+			quit()
+		
+		bin_ops(keyin, inpf, outpf, clikey)
+
 	else:
-		raise AttributeError(doc)
-	"""
+		if '-e' in sys.argv:
+			enc = True
+		elif '-d' in sys.argv:
+			enc = False
+		else:
+			enc = True if input("Encrypt? (y/n)") == 'y' else False
+		
+		if '-k' in sys.argv:
+			try:
+				keyfile = sys.argv[sys.argv.index('-k')+1]
+				keyf = open(keyfile, 'r')
+				keyin = keyf.read()
+				keyf.close()
+			except:
+				print('Specify path to key file after -k')
+				quit()
+		else:
+			keyin = getpass.getpass("Enter key:")
+		
+		if '-i' in sys.argv:
+			try:
+				inpfile = sys.argv[sys.argv.index('-i')+1]
+				inpf = open(inpfile, 'r')
+				inp = inpf.read()
+				inpf.close()
+			except:
+				print('Specify path to input file after -i')
+				quit()
+		else:
+			inp = input("Enter input text:")
+
+		output = txt_ops(enc, keyin, inp)
+
+		if '-o' in sys.argv:
+			try:
+				outfile = sys.argv[sys.argv.index('-o')+1]
+				outpf = open(outfile, 'w')
+				outpf.write(output)
+				outpf.close()
+			except:
+				print('Specify path to output file after -o')
+				print(output)
+				quit()
+		else:
+			print(output)
