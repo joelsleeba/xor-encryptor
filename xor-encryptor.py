@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
 		if '-o' in sys.argv:
 			try:
-				outf = sys.argv[sys.argv.index('-i')+1]
+				outpf = sys.argv[sys.argv.index('-o')+1]
 			except:
 				print('Specify path to output file after -o')
 				quit()
