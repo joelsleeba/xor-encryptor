@@ -7,25 +7,18 @@ doc = """
 """
 
 
-def xor_core(textnums, key):
+def xor_core(data, key):
     xor = lambda x, y: x^y
-    keynums = [ord(j) for i in range(0, len(textnums)//len(key)+1) for j in key]
-    return list(map(xor, textnums, keynums))
-
-def xor_encrypt(text, key):
-    textnums = list(map(ord, text))
-    return ','.join(map(str, xor_core(textnums, key)))
-
-def xor_decrypt(text, key):
-    textnums = list(map(int, text.split(',')))
-    return ''.join(map(chr, xor_core(textnums, key)))
+    longkey = key*(len(data)//len(key)+1)
+    datarray = bytearray(data)
+    return bytes(map(xor, datarray, longkey))
  
-def file_ops(enc=True, inp='input', outp='output-'+str(date.today())): 
-	with open(inp, 'r') as fin:
-		text = fin.read()
-		key = getpass.getpass("Enter key:")
-		out = xor_encrypt(text, key) if enc else xor_decrypt(text, key)
-		with open(outp, 'w') as fout:
+def file_ops(keyfile='key', inp=None, outp=None):
+	with open(inp, 'rb') as fin, open(keyfile, 'rb') as keyin:
+		data = fin.read()
+		key = keyin.read()
+		out = xor_core(data, key)
+		with open(outp, 'wb') as fout:
 			fout.write(out)
 		#print(out)
 
@@ -41,6 +34,10 @@ def cli():
 		print(xor_decrypt(text, key))
 		
 if __name__ == "__main__":
+	if sys.argv[1] == '-k' and sys.argv[3] == '-i' and sys.argv[5] == '-o':
+		file_ops(keyfile = sys.argv[2], inp = sys.argv[4], outp = sys.argv[6])
+
+	"""
 	if len(sys.argv) < 3:
 		file_ops()
 	elif len(sys.argv) == 4:
@@ -79,3 +76,4 @@ if __name__ == "__main__":
 			raise AttributeError(doc)
 	else:
 		raise AttributeError(doc)
+	"""
