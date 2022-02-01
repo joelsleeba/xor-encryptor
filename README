@@ -6,45 +6,50 @@
 **xor-encryptor** - encrypt text keyphrase
 
 # SYNOPSIS
-**python xor-encryptor.py {-b} -{e,d} -k {key_file} -i {input_file} -o {output_file}**
+python xor-encryptor.py {-b} -{e,d} -k {key_file} -i {input_file} -o {output_file}
+
 
 # DESCRIPTION
 **xor-encryptor** encrypt/decrypt texts with the logical xor. It takes input from the _input_file_ and output to _output_file_
 
+
 # OPTIONS
-**-b**
-: toggle binary file operations mode. off by default.
+-----------------------------
+-b
+    : toggle binary file operations mode. off by default.
 
-**-e**
-: to encrypt
+-e
+    : to encrypt
 
-**-d**
-: to decrypt
+-d
+    : to decrypt
 
-**-k**
-: specify the keyfile
+-k
+    : specify the keyfile
 
-**-i** *input_file*
-: specify the input file
+-i *input_file*
+    : specify the input file
 
-**-o** *output_file*
-: specify the output file
+-o *output_file*
+    : specify the output file
+
 
 # EXAMPLES
-**python xor-encryptor.py**
-: Will ask if to encrypt/decrypt, keyphrase, input text and output all from/to the STDIN
+-----------------------------
+- python xor-encryptor.py
+    : Will ask if to encrypt/decrypt, keyphrase, input text and output all from/to the STDIN
 
-**python xor-encryptor.py -e**
-: same as **python xor-encryptor.py** but knows it is to encrypt
+- python xor-encryptor.py -e
+    : same as *python xor-encryptor.py* but knows it is to encrypt
 
-**python xor-encryptor.py -d -i inputfile**
-: will ask for key and will output in STDIN
+- python xor-encryptor.py -d -i inputfile
+    : will ask for key and will output in STDIN
 
-**python xor-encryptor.py -e -i plaintext.txt -o cipher.txt**
-: Encrypts the content in *plaintext.txt* and saves it in *cipher.txt*
+- python xor-encryptor.py -e -i plaintext.txt -o cipher.txt
+    : Encrypts the content in *plaintext.txt* and saves it in *cipher.txt*
 
-**python xor-encryptor.py -d -k keyfile -i ciphertext.txt -o plaintext.txt**
-: Decrypts the content in *ciphertext.txt* and saves it in *plaintext.txt*
+- python xor-encryptor.py -d -k keyfile -i ciphertext.txt -o plaintext.txt
+    : Decrypts the content in *ciphertext.txt* and saves it in *plaintext.txt*
 
-**python xor-encryptor.py -b -k keyfile -i img.png -o enc_img.png**
-: Encrypts/Decrypts a binary file. if -k is not specified, it'll ask to input keyphrase from command prompt
+- python xor-encryptor.py -b -k keyfile -i img.png -o enc_img.png
+    : Encrypts/Decrypts a binary file. if -k is not specified, it'll ask to input keyphrase from command prompt
