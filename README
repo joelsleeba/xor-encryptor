@@ -32,6 +32,9 @@ python xor-encryptor.py {-b} -{e,d} -k {key_file} -i {input_file} -o {output_fil
 
 -o *output_file*
     : specify the output file
+    : '-o -' will output to STDOUT in -b mode, allowing to pipe streams.
+    : try python xor-encryptor -b -d -k keys/samplekey -i output/image.png -o - |chafa
+    : you can use chafa or img2sixel, given that your terminal supports sixel output.
 
 
 # EXAMPLES
